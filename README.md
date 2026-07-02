@@ -1,1 +1,478 @@
-# Store
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategori Layanan</title>
+    
+    <!-- Google Fonts untuk tampilan yang elegan -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* ======================== */
+        /* PENGATURAN DASAR & TEMA  */
+        /* ======================== */
+        :root {
+            --bg-base: #09090b; /* Warna latar sangat gelap */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary-glow: rgba(139, 92, 246, 0.15); /* Ungu lembut untuk glow */
+            --accent: #8b5cf6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Hilangkan highlight biru di mobile */
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            
+            /* Background gradient halus */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.12) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* ======================== */
+        /* HEADER                   */
+        /* ======================== */
+        header {
+            text-align: center;
+            padding: 60px 20px 30px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        /* ======================== */
+        /* GRID KATEGORI            */
+        /* ======================== */
+        .grid-container {
+            display: grid;
+            /* Default Mobile: 2 Kolom */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 0 20px 60px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Desktop: 3 Kolom */
+        @media (min-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+            header h1 {
+                font-size: 2.5rem;
+            }
+            header p {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* ======================== */
+        /* CARD GLASSMORPHISM       */
+        /* ======================== */
+        .category-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            overflow: hidden;
+            text-decoration: none;
+            
+            /* Glassmorphism Effect */
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            
+            /* Border Gradient Tipis via box-shadow & border */
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            
+            /* Transisi Halus */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* Animasi masuk (dikendalikan via inline style delay) */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        /* Agar elemen di dalam card tidak mengganggu klik ripple JS */
+        .category-card * {
+            pointer-events: none;
+        }
+
+        /* Efek Hover Desktop */
+        @media (hover: hover) {
+            .category-card:hover {
+                background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+                border-color: rgba(255, 255, 255, 0.2);
+                box-shadow: 0 10px 40px var(--primary-glow);
+                transform: translateY(-4px);
+            }
+        }
+
+        /* Animasi Scale saat ditekan */
+        .category-card:active {
+            transform: scale(0.95);
+            transition: all 0.1s;
+        }
+
+        /* Ikon styling */
+        .icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent);
+            margin-bottom: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover .icon-wrapper {
+            transform: scale(1.1);
+        }
+
+        /* Teks Card */
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .category-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Efek Ripple (Gelombang Klik) */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        /* ======================== */
+        /* MODAL (PENGGANTI ALERT)  */
+        /* ======================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--bg-base);
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            color: #ef4444; /* Merah untuk peringatan */
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .modal-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .modal-btn {
+            background: var(--text-main);
+            color: var(--bg-base);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        .modal-btn:active {
+            opacity: 0.8;
+        }
+
+        /* ======================== */
+        /* KEYFRAMES                */
+        /* ======================== */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Tweaks tambahan untuk Mobile Kecil */
+        @media (max-width: 360px) {
+            .category-title {
+                font-size: 0.95rem;
+            }
+            .category-desc {
+                font-size: 0.75rem;
+            }
+            .icon-wrapper {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Pilih Kategori</h1>
+        <p>Akses layanan favorit kamu dengan cepat</p>
+    </header>
+
+    <!-- Grid Layout -->
+    <main class="grid-container">
+        <!-- Card 1 -->
+        <div class="category-card" data-category="premium" style="animation-delay: 0.1s;">
+            <div class="icon-wrapper">
+                <i data-lucide="sparkles"></i>
+            </div>
+            <h2 class="category-title">APK Premium</h2>
+            <p class="category-desc">Akses aplikasi premium unlock semua fitur.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="category-card" data-category="mod" style="animation-delay: 0.2s;">
+            <div class="icon-wrapper">
+                <i data-lucide="wrench"></i>
+            </div>
+            <h2 class="category-title">APK Mod</h2>
+            <p class="category-desc">Modifikasi terbaik tanpa batas.</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="category-card" data-category="panel" style="animation-delay: 0.3s;">
+            <div class="icon-wrapper">
+                <i data-lucide="server"></i>
+            </div>
+            <h2 class="category-title">Panel Pterodactyl</h2>
+            <p class="category-desc">Hosting game server cepat & aman.</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="category-card" data-category="nokos" style="animation-delay: 0.4s;">
+            <div class="icon-wrapper">
+                <i data-lucide="smartphone"></i>
+            </div>
+            <h2 class="category-title">Nokos / OTP</h2>
+            <p class="category-desc">Nomor virtual untuk verifikasi instan.</p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="category-card" data-category="contact" style="animation-delay: 0.5s;">
+            <div class="icon-wrapper">
+                <i data-lucide="headset"></i>
+            </div>
+            <h2 class="category-title">Kontak Admin</h2>
+            <p class="category-desc">Hubungi kami jika butuh bantuan.</p>
+        </div>
+
+        <!-- Card 6 (Contoh Link Kosong) -->
+        <div class="category-card" data-category="empty_demo" style="animation-delay: 0.6s;">
+            <div class="icon-wrapper" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.2);">
+                <i data-lucide="ghost"></i>
+            </div>
+            <h2 class="category-title">Layanan Lain</h2>
+            <p class="category-desc">Segera hadir. Klik untuk tes error link.</p>
+        </div>
+    </main>
+
+    <!-- Custom Modal (Pengganti Alert) -->
+    <div class="modal-overlay" id="alertModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i data-lucide="alert-circle" width="48" height="48"></i>
+            </div>
+            <h3 class="modal-title">Oops!</h3>
+            <p class="modal-text">Link belum diatur admin.</p>
+            <button class="modal-btn" id="closeModalBtn">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Interaksi -->
+    <script>
+        // 1. Inisialisasi Lucide Icons
+        lucide.createIcons();
+
+        // 2. Database URL (Object sesuai permintaan, mudah diedit admin)
+        const categoryLinks = {
+            premium: "https://contoh.com/apk-premium",
+            mod: "https://contoh.com/apk-mod",
+            panel: "https://contoh.com/panel-pterodactyl",
+            nokos: "https://contoh.com/nokos",
+            contact: "https://wa.me/6285782544861",
+            empty_demo: "" // Dikosongkan untuk testing modal error
+        };
+
+        // 3. Sistem Modal
+        const modal = document.getElementById('alertModal');
+        const closeBtn = document.getElementById('closeModalBtn');
+
+        function showModal() {
+            modal.style.display = 'flex';
+            // Trigger reflow untuk animasi
+            void modal.offsetWidth; 
+            modal.style.opacity = '1';
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.style.opacity = '0';
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // Sinkronisasi dengan durasi transisi CSS
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+
+        // 4. Efek Ripple dan Sistem Redirect
+        const cards = document.querySelectorAll('.category-card');
+
+        cards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Buat Elemen Gelombang (Ripple)
+                const circle = document.createElement('span');
+                const diameter = Math.max(card.clientWidth, card.clientHeight);
+                const radius = diameter / 2;
+
+                // Hitung posisi klik (mendukung mouse & sentuhan)
+                const rect = card.getBoundingClientRect();
+                let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                let clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${clientX - rect.left - radius}px`;
+                circle.style.top = `${clientY - rect.top - radius}px`;
+                circle.classList.add('ripple');
+
+                // Hapus ripple lama jika ada yang tertinggal
+                const existingRipple = card.querySelector('.ripple');
+                if (existingRipple) {
+                    existingRipple.remove();
+                }
+
+                card.appendChild(circle);
+
+                // Eksekusi Logika Redirect
+                const category = card.getAttribute('data-category');
+                const url = categoryLinks[category];
+
+                // Beri sedikit delay agar efek animasi ripple & click terlihat
+                setTimeout(() => {
+                    if (url && url.trim() !== '') {
+                        window.location.href = url;
+                    } else {
+                        showModal();
+                    }
+                }, 350); 
+            });
+        });
+    </script>
+</body>
+</html>
+
+```
